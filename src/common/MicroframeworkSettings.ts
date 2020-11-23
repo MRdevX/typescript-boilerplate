@@ -24,7 +24,8 @@ export class MicroframeworkSettings {
   // Constructor
   // -------------------------------------------------------------------------
 
-  constructor(private config: any) {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  constructor(config: any) {}
 
   // -------------------------------------------------------------------------
   // Public Methods
