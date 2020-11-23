@@ -1,25 +1,42 @@
-import { Delays } from './enums/delays.enum';
+import 'reflect-metadata';
+import { bootstrapMicroframework } from './common';
+
+import { banner } from './lib/banner';
+import { Logger } from './lib/logger';
+import { eventDispatchLoader } from './loaders/eventDispatchLoader';
+import { expressLoader } from './loaders/expressLoader';
+import { homeLoader } from './loaders/homeLoader';
+import { monitorLoader } from './loaders/monitorLoader';
+import { publicLoader } from './loaders/publicLoader';
+import { swaggerLoader } from './loaders/swaggerLoader';
+import { typeormLoader } from './loaders/typeormLoader';
+import { winstonLoader } from './loaders/winstonLoader';
 
 /**
- * Returns a Promise<string> that resolves after given time.
+ * EXPRESS TYPESCRIPT BOILERPLATE
+ * ----------------------------------------
  *
- * @param {string} name - A name.
- * @param {number=} [delay=Delays.MEDIUM] - Number of milliseconds to delay resolution of the Promise.
- * @returns {Promise<string>}
+ * This is a boilerplate for Node.js Application written in TypeScript.
+ * The basic layer of this app is express. For further information visit
+ * the 'README.md' file.
  */
-function delayedHello(
-  name: string,
-  delay: number = Delays.MEDIUM,
-): Promise<string> {
-  return new Promise((resolve: (value?: string) => void) =>
-    setTimeout(() => resolve(`Hello, ${name}`), delay),
-  );
-}
+const log = new Logger(__filename);
 
-// Below are examples of using ESLint errors suppression
-// Here it is suppressing missing return type definitions for greeter function
-
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export async function greeter(name: string) {
-  return await delayedHello(name, Delays.LONG);
-}
+bootstrapMicroframework({
+  /**
+   * Loader is a place where you can configure all your modules during microframework
+   * bootstrap process. All loaders are executed one by one in a sequential order.
+   */
+  loaders: [
+    winstonLoader,
+    eventDispatchLoader,
+    typeormLoader,
+    expressLoader,
+    swaggerLoader,
+    monitorLoader,
+    homeLoader,
+    publicLoader,
+  ],
+})
+  .then(() => banner(log))
+  .catch((error) => log.error('Application is crashed: ' + error));
