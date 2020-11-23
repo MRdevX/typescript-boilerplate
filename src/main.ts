@@ -1,11 +1,29 @@
-import 'reflect-metadata'; // this shim is required
-import { createExpressServer } from 'routing-controllers';
+import 'reflect-metadata';
+import { createExpressServer, useContainer } from 'routing-controllers';
+import { Container } from 'typedi';
+import { PetController } from './api/controllers/PetController';
 import { UserController } from './api/controllers/UserController';
 
-// creates express app, registers all controller routes and returns you express app instance
-const app = createExpressServer({
-  controllers: [UserController], // we specify controllers we want to use
+/**
+ * Setup routing-controllers to use typedi container.
+ */
+useContainer(Container);
+
+/**
+ * We create a new express server instance.
+ * We could have also use useExpressServer here to attach controllers to an existing express instance.
+ */
+const expressApp = createExpressServer({
+  /**
+   * We can add options about how routing-controllers should configure itself.
+   * Here we specify what controllers should be registered in our express server.
+   */
+  controllers: [UserController, PetController],
 });
 
-// run express application on port 3000
-app.listen(3000);
+/**
+ * Start the express app.
+ */
+expressApp.listen(3000);
+
+console.log('Server is up and running at port 3000');
